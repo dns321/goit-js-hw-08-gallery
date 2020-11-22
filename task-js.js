@@ -8,7 +8,7 @@ const refs = {
     overlay: document.querySelector('.lightbox__overlay'),
 };
 
-const galeryElementRef = ({ preview, original, description }, i) =>
+const galeryElementRef = ({ preview, original, description }) =>
     `<li class="gallery__item">
         <a
             class="gallery__link"
@@ -16,7 +16,6 @@ const galeryElementRef = ({ preview, original, description }, i) =>
         >
             <img
                 class="gallery__image"
-                data-index = "${i}"
                 src="${preview}"
                 data-source="${original}"
                 alt="${description}"
@@ -37,14 +36,15 @@ function openOriginalImg(event) {
     if (event.target.nodeName !== 'IMG') { 
         return;
     }
-
     const imageRef = event.target;
-    const originalImgURL = imageRef.dataset.source
-    setLergeImgSrc(originalImgURL);
+    const originalImgURL = imageRef.dataset.source;
+    const alt = imageRef.alt;
+    setLergeImgSrc(originalImgURL, alt);
 };
 
-function setLergeImgSrc(url) {
+function setLergeImgSrc(url, alt) {
     refs.largeImage.src = url;
+    refs.largeImage.alt = alt;
 };
 
 function openModal() {
@@ -55,7 +55,8 @@ function openModal() {
 function cloceModal() {
     window.removeEventListener('keydown', cloceModalPressEsc);
     refs.backdrope.classList.remove('is-open');
-    refs.largeImage.src = '';    
+    refs.largeImage.src = '';
+    refs.largeImage.alt = '';
 };
 
 function backdropeCloceModal(event) {
@@ -70,3 +71,4 @@ function cloceModalPressEsc(event) {
         console.log('Press Esc');
         }
 };
+
