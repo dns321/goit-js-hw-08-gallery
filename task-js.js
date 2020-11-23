@@ -15,7 +15,7 @@ const galeryElementRef = ({ preview, original, description, id }) =>
             href="${original}"
         >
             <img
-            data-id='${id}'
+                data-id='${id}'
                 class="gallery__image"
                 src="${preview}"
                 data-source="${original}"
@@ -27,10 +27,11 @@ const galeryElementRef = ({ preview, original, description, id }) =>
 const galeryMarcup = galleryImages.reduce((acc, img, i) => acc + galeryElementRef({ ...img, id: i + 1 }), ""); 
 refs.gallery.innerHTML = galeryMarcup;
 
-const img = document.querySelector('.gallery__image');
-img.setAttribute("data-id", "1");
+// const img = document.querySelector('.gallery__image');
+// img.setAttribute("data-id", "0");
 
-const idImg = Number(img.dataset.id);
+// const idImg = Number(img.dataset.id);
+let currentImgId = null;
 
 refs.gallery.addEventListener('click', openOriginalImg);
 refs.gallery.addEventListener('click', openModal);
@@ -45,12 +46,15 @@ function openOriginalImg(event) {
     const imageRef = event.target;
     const originalImgURL = imageRef.dataset.source;
     const alt = imageRef.alt;
-    setLergeImgSrc(originalImgURL, alt);
+    const id = imageRef.dataset.id;
+    setLergeImgSrc(originalImgURL, alt, id);    
 };
 
-function setLergeImgSrc(url, alt) {
+function setLergeImgSrc(url, alt, id) {
     refs.largeImage.src = url;
     refs.largeImage.alt = alt;
+    currentImgId = Number(id);
+    console.log(currentImgId);
 };
 
 function openModal() {
@@ -63,6 +67,7 @@ function cloceModal() {
     refs.backdrope.classList.remove('is-open');
     refs.largeImage.src = '';
     refs.largeImage.alt = '';
+    currentImgId = null;
 };
 
 function backdropeCloceModal(event) {
@@ -77,17 +82,17 @@ function pressKey({ code }) {
     code === 'ArrowLeft' && prevImg();
 };
 
-let currentImgId = null;
-
 function nextImg() { 
     currentImgId = galleryImages.length - 1 === currentImgId ? 0 : currentImgId + 1;
+    console.log(currentImgId);
     const { original, description } = galleryImages[currentImgId];
     refs.largeImage.src = original;
-    refs.largeImage.alt = description;
+    refs.largeImage.alt = description;    
 };
 
 function prevImg() { 
     currentImgId = currentImgId === 0 ? galleryImages.length - 1 : currentImgId - 1;
+    console.log(currentImgId);
     const { original, description } = galleryImages[currentImgId];
     refs.largeImage.src = original;
     refs.largeImage.alt = description;
