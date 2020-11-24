@@ -43,9 +43,8 @@ function openOriginalImg(event) {
     if (event.target.nodeName !== 'IMG') { 
         return;
     }
-    const imageRef = event.target;
-    const originalImgURL = imageRef.dataset.source;
-    const alt = imageRef.alt;
+    const { dataset, alt} = event.target;
+    const originalImgURL = dataset.source;
     const id = imageRef.dataset.id;
     setLergeImgSrc(originalImgURL, alt, id);    
 };
