@@ -24,7 +24,7 @@ const galeryElementRef = ({ preview, original, description, id }) =>
         </a>
     </li>\n`;
 
-const galeryMarcup = galleryImages.reduce((acc, img, i) => acc + galeryElementRef({ ...img, id: i + 1 }), ""); 
+const galeryMarcup = galleryImages.reduce((acc, img, i) => acc + galeryElementRef({ ...img, id: i }), ""); 
 refs.gallery.innerHTML = galeryMarcup;
 
 // const img = document.querySelector('.gallery__image');
@@ -54,7 +54,7 @@ function setLergeImgSrc(url, alt, id) {
     refs.largeImage.src = url;
     refs.largeImage.alt = alt;
     currentImgId = Number(id);
-    console.log(currentImgId);
+    console.log('open:', currentImgId);
 };
 
 function openModal() {
@@ -68,6 +68,7 @@ function cloceModal() {
     refs.largeImage.src = '';
     refs.largeImage.alt = '';
     currentImgId = null;
+    console.log('close:', currentImgId);
 };
 
 function backdropeCloceModal(event) {
@@ -84,7 +85,7 @@ function pressKey({ code }) {
 
 function nextImg() { 
     currentImgId = galleryImages.length - 1 === currentImgId ? 0 : currentImgId + 1;
-    console.log(currentImgId);
+    console.log('slideR:', currentImgId);
     const { original, description } = galleryImages[currentImgId];
     refs.largeImage.src = original;
     refs.largeImage.alt = description;    
@@ -92,7 +93,7 @@ function nextImg() {
 
 function prevImg() { 
     currentImgId = currentImgId === 0 ? galleryImages.length - 1 : currentImgId - 1;
-    console.log(currentImgId);
+    console.log('slideL:', currentImgId);
     const { original, description } = galleryImages[currentImgId];
     refs.largeImage.src = original;
     refs.largeImage.alt = description;
