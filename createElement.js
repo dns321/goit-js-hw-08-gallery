@@ -41,31 +41,25 @@ $gallery.append(...galeryMarcup);
 let currentImgId = null;
 
 $gallery.addEventListener('click', openOriginalImg);
-$gallery.addEventListener('click', openModal);
 $cloceModalBtn.addEventListener('click', cloceModal);
 $backdrope.addEventListener('click', backdropeCloceModal);
 
 function openOriginalImg(event) {
     event.preventDefault();
-    console.log(event.target);
-    console.log(event.target.nodeName);
     const { dataset, alt, nodeName } = event.target;
     
     if (nodeName === 'IMG') { 
         const originalImgURL = dataset.source;
         const id = dataset.id;
-        setLergeImgSrc(originalImgURL, alt, id);
+        openModal(originalImgURL, alt, id);
     }        
 };
 
-function setLergeImgSrc(url, alt, id) {
+function openModal(url, alt, id) {
+    window.addEventListener('keydown', pressKey);
     $largeImage.src = url;
     $largeImage.alt = alt;
     currentImgId = Number(id);
-};
-
-function openModal() {
-    window.addEventListener('keydown', pressKey);
     $backdrope.classList.add('is-open');
 };
  

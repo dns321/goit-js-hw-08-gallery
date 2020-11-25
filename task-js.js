@@ -30,30 +30,31 @@ refs.gallery.innerHTML = galeryMarcup;
 let currentImgId = null;
 
 refs.gallery.addEventListener('click', openOriginalImg);
-refs.gallery.addEventListener('click', openModal);
 refs.cloceModalBtn.addEventListener('click', cloceModal);
 refs.backdrope.addEventListener('click', backdropeCloceModal);
 
 function openOriginalImg(event) {
     event.preventDefault();
-    if (event.target.nodeName !== 'IMG')
-        return
+    const { dataset, alt, nodeName } = event.target;
     
-    const { dataset, alt} = event.target;
-    const originalImgURL = dataset.source;
-    const id = dataset.id;
-    setLergeImgSrc(originalImgURL, alt, id);    
+    if (nodeName === 'IMG') {
+        const originalImgURL = dataset.source;
+        const id = dataset.id;
+        openModal(originalImgURL, alt, id);
+    }    
 };
 
 function setLergeImgSrc(url, alt, id) {
     refs.largeImage.src = url;
     refs.largeImage.alt = alt;
     currentImgId = Number(id);
-    console.log('open:', currentImgId);
 };
 
-function openModal() {
+function openModal(url, alt, id) {
     window.addEventListener('keydown', pressKey);
+    refs.largeImage.src = url;
+    refs.largeImage.alt = alt;
+    currentImgId = Number(id);
     refs.backdrope.classList.add('is-open');
 };
  
@@ -63,7 +64,6 @@ function cloceModal() {
     refs.largeImage.src = '';
     refs.largeImage.alt = '';
     currentImgId = null;
-    console.log('close:', currentImgId);
 };
 
 function backdropeCloceModal(event) {
@@ -80,7 +80,6 @@ function pressKey({ code }) {
 
 function nextImg() { 
     currentImgId = galleryImages.length - 1 === currentImgId ? 0 : currentImgId + 1;
-    console.log('slideR:', currentImgId);
     const { original, description } = galleryImages[currentImgId];
     refs.largeImage.src = original;
     refs.largeImage.alt = description;    
@@ -88,7 +87,6 @@ function nextImg() {
 
 function prevImg() { 
     currentImgId = currentImgId === 0 ? galleryImages.length - 1 : currentImgId - 1;
-    console.log('slideL:', currentImgId);
     const { original, description } = galleryImages[currentImgId];
     refs.largeImage.src = original;
     refs.largeImage.alt = description;
