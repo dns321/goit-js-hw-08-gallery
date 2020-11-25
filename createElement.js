@@ -1,5 +1,5 @@
 import galleryImages from './gallery-items.js';
-console.table(galleryImages);
+// console.table(galleryImages);
 
 const refs = {
     $gallery: document.querySelector('.js-gallery'),
@@ -11,21 +11,21 @@ const refs = {
 
 const {$gallery, $largeImage, $backdrope, $cloceModalBtn, $overlay } = refs;
 
-const createGalleryMarkup = ((preview, original, description, id ) => {
+const createGalleryMarkup = (({preview, original, description, id}) => {
     // Створюю елементи
     const itemLiRef = document.createElement('li');
     itemLiRef.classList.add('gallery__item');
 
     const linkRef = document.createElement('a');
     linkRef.classList.add('gallery__link');
-    linkRef.setAttribute('href', '${original}');
+    linkRef.setAttribute('href', original);
 
     const imgRef = document.createElement('img');
     imgRef.classList.add('gallery__image');
-    imgRef.setAttribute('data-id', '${id}');
-    imgRef.setAttribute//('src', '${preview}');
-    imgRef.setAttribute('data-source', '${original}');
-    imgRef.setAttribute('alt', '${description}');
+    imgRef.setAttribute('data-id', id);
+    imgRef.setAttribute('src', preview);
+    imgRef.setAttribute('data-source', original);
+    imgRef.setAttribute('alt', description);
 
     // Збираю до купи
     itemLiRef.appendChild(linkRef);
@@ -34,14 +34,76 @@ const createGalleryMarkup = ((preview, original, description, id ) => {
     return itemLiRef;
 });
 
-console.log(createGalleryMarkup(galleryImages));
+const galeryMarcup = galleryImages.map((img, i) => createGalleryMarkup({ ...img, id: i}));
 
-const galeryMarcup = galleryImages.reduce((acc, img, i) => acc + createGalleryMarkup({ ...img, id: i + 1 }), ""); 
+$gallery.append(...galeryMarcup);
 
-console.log(galeryMarcup);
+let currentImgId = null;
 
-$gallery.innerHTML = galeryMarcup;
+$gallery.addEventListener('click', openOriginalImg);
+$gallery.addEventListener('click', openModal);
+$cloceModalBtn.addEventListener('click', cloceModal);
+$backdrope.addEventListener('click', backdropeCloceModal);
 
+function openOriginalImg(event) {
+    event.preventDefault();
+    console.log(event.target);
+    console.log(event.target.nodeName);
+    const { dataset, alt, nodeName } = event.target;
+    
+    if (nodeName === 'IMG') { 
+        const originalImgURL = dataset.source;
+        const id = dataset.id;
+        setLergeImgSrc(originalImgURL, alt, id);
+    }        
+};
+
+function setLergeImgSrc(url, alt, id) {
+    $largeImage.src = url;
+    $largeImage.alt = alt;
+    currentImgId = Number(id);
+};
+
+function openModal() {
+    window.addEventListener('keydown', pressKey);
+    $backdrope.classList.add('is-open');
+};
+ 
+function cloceModal() {
+    window.removeEventListener('keydown', pressKey);
+    $backdrope.classList.remove('is-open');
+    $largeImage.src = '';
+    $largeImage.alt = '';
+    currentImgId = null;
+};
+
+function backdropeCloceModal(event) {
+    if(event.target === $overlay) { 
+        cloceModal();
+    }
+};
+
+function pressKey({ code }) {
+    code === 'Escape' && cloceModal();
+    code === 'ArrowRight'&& nextImg();
+    code === 'ArrowLeft' && prevImg();
+};
+
+function nextImg() { 
+    currentImgId = galleryImages.length - 1 === currentImgId ? 0 : currentImgId + 1;
+    console.log('slideR:', currentImgId);
+    const { original, description } = galleryImages[currentImgId];
+    $largeImage.src = original;
+    $largeImage.alt = description;    
+};
+
+function prevImg() { 
+    currentImgId = currentImgId === 0 ? galleryImages.length - 1 : currentImgId - 1;
+    console.log('slideL:', currentImgId);
+    const { original, description } = galleryImages[currentImgId];
+    $largeImage.src = original;
+    $largeImage.alt = description;
+};
 
 
 

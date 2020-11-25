@@ -27,10 +27,6 @@ const galeryElementRef = ({ preview, original, description, id }) =>
 const galeryMarcup = galleryImages.reduce((acc, img, i) => acc + galeryElementRef({ ...img, id: i }), ""); 
 refs.gallery.innerHTML = galeryMarcup;
 
-// const img = document.querySelector('.gallery__image');
-// img.setAttribute("data-id", "0");
-
-// const idImg = Number(img.dataset.id);
 let currentImgId = null;
 
 refs.gallery.addEventListener('click', openOriginalImg);
@@ -40,12 +36,12 @@ refs.backdrope.addEventListener('click', backdropeCloceModal);
 
 function openOriginalImg(event) {
     event.preventDefault();
-    if (event.target.nodeName !== 'IMG') { 
-        return;
-    }
+    if (event.target.nodeName !== 'IMG')
+        return
+    
     const { dataset, alt} = event.target;
     const originalImgURL = dataset.source;
-    const id = imageRef.dataset.id;
+    const id = dataset.id;
     setLergeImgSrc(originalImgURL, alt, id);    
 };
 
